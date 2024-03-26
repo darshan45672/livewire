@@ -22,6 +22,10 @@ class TodoList extends Component
 
         session()->flash('success', 'Todo Created Successfully.');
     }
+
+    public function delete($todo){
+        Todo::find($todo)->delete();
+    }
     public function render()
     {
         return view('livewire.todo-list',[
