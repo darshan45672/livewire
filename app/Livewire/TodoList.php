@@ -3,10 +3,13 @@
 namespace App\Livewire;
 
 use App\Models\Todo;
+use Exception;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class TodoList extends Component
 {
+    use WithPagination;
     // #[Rule('required|min:3|max:50')]
     public $name;
     public $search;
@@ -23,10 +26,18 @@ class TodoList extends Component
         $this->reset('name');
 
         session()->flash('success', 'Todo Created Successfully.');
+
+        $this->resetPage();
     }
 
     public function delete($todo){
-        Todo::find($todo)->delete();
+        try {
+            Todo::findOrFail($todo)->delete();
+        } catch (Exception $e) {
+            session()->flash('error', 'Todo Not Found.');
+            return;
+        }
+        
     }
 
     public function toggle( $todoId){
